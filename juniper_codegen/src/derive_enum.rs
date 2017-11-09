@@ -129,7 +129,7 @@ pub fn impl_enum(ast: &syn::DeriveInput) -> Tokens {
 
         // Build resolve match clause.
         let resolve = quote!{
-            &#ident::#var_ident => ::juniper::Value::String(#name.to_string()),
+            &#ident::#var_ident => ::juniper::Value::string(#name.to_string()),
         };
         resolves.push(resolve);
 

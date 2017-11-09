@@ -32,7 +32,7 @@ impl Deref for ID {
 
 graphql_scalar!(ID as "ID" {
     resolve(&self) -> Value {
-        Value::string(&self.0)
+        Value::string(self.0.clone())
     }
 
     from_input_value(v: &InputValue) -> Option<ID> {
@@ -47,7 +47,7 @@ graphql_scalar!(ID as "ID" {
 
 graphql_scalar!(String as "String" {
     resolve(&self) -> Value {
-        Value::string(self)
+        Value::string(self.clone())
     }
 
     from_input_value(v: &InputValue) -> Option<String> {
@@ -72,7 +72,7 @@ impl<'a> GraphQLType for &'a str {
     }
 
     fn resolve(&self, _: &(), _: Option<&[Selection]>, _: &Executor<Self::Context>) -> Value {
-        Value::string(self)
+        Value::string(self.to_string())
     }
 }
 

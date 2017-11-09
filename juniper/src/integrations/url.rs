@@ -6,7 +6,7 @@ graphql_scalar!(Url {
     description: "Url"
 
     resolve(&self) -> Value {
-        Value::string(self.as_str())
+        Value::string(self.as_str().to_owned())
     }
 
     from_input_value(v: &InputValue) -> Option<Url> {

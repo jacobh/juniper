@@ -1,4 +1,5 @@
 use ordermap::OrderMap;
+use std::borrow::Cow;
 use std::hash::Hash;
 
 use parser::Spanning;
@@ -19,7 +20,7 @@ pub enum Value {
     Null,
     Int(i32),
     Float(f64),
-    String(String),
+    String(Cow<'static, str>),
     Boolean(bool),
     List(Vec<Value>),
     Object(OrderMap<String, Value>),
@@ -44,8 +45,8 @@ impl Value {
     }
 
     /// Construct a string value.
-    pub fn string<T: AsRef<str>>(s: T) -> Value {
-        Value::String(s.as_ref().to_owned())
+    pub fn string<T: Into<Cow<'static, str>>>(s: T) -> Value {
+        Value::String(s.into())
     }
 
     /// Construct a boolean value.
@@ -123,7 +124,7 @@ impl ToInputValue for Value {
             Value::Null => InputValue::Null,
             Value::Int(i) => InputValue::Int(i),
             Value::Float(f) => InputValue::Float(f),
-            Value::String(ref s) => InputValue::String(s.clone()),
+            Value::String(ref s) => InputValue::String(s.clone().into_owned()),
             Value::Boolean(b) => InputValue::Boolean(b),
             Value::List(ref l) => {
                 InputValue::List(l.iter().map(|x| Spanning::unlocated(x.to_input_value())).collect())
@@ -141,7 +142,7 @@ impl ToInputValue for Value {
 
 impl<'a> From<&'a str> for Value {
     fn from(s: &'a str) -> Value {
-        Value::string(s)
+        Value::string(s.to_owned())
     }
 }
 
